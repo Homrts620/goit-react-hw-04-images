@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 
-const Modal = props = () {
+const Modal = props => {
     const { imgSrc, imgAlt, closeHandler, escHandler } = props;
     
     useEffect(() => {
