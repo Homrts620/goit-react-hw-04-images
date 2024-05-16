@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ images, clickHandler }) => {
+const ImageGallery = ({ images, clickHandler }) => {
     useEffect(() => {
         if (images.length > 12) {
             window.scrollBy({ top:500, behavior: 'smooth'});
