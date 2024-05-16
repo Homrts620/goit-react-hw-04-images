@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
-import css from './ImageGalleryItem.module.css';
+import css from './ImageGallery.module.css';
 
 const ImageGallery = ({ images, clickHandler }) => {
     useEffect(() => {
