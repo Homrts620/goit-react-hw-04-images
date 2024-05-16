@@ -97,7 +97,6 @@ useEffect(() => {
 		}
 	}, [page, query]);
 
-
 		return (
 			<>
 				{modalIsOpen && (
