@@ -1,35 +1,30 @@
-import React, { Component } from "react";
-import Api from "./Api";
-import "./App.css";
-import Searchbar from "./SearchBar/SearchBar";
-import ImageGallery from "./ImageGallery/ImageGallery";
-import Button from "./Button/Button";
-import Modal from "./Modal/Modal";
-import Loader from "./Loader/Loader";
-import OnError from "./OnError/OnError";
+import React, { Component } from 'react';
+import Api from './Api';
+import './App.css';
+import Searchbar from './SearchBar/SearchBar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import Button from './Button/Button';
+import Modal from './Modal/Modal';
+import Loader from './Loader/Loader';
+import OnError from './OnError/OnError';
 
 
-class App extends Component {
-	state = {
-		images: [],
-		isLoading: false,
-		error: null,
-		query: "",
-		actualPage: 1,
-		lastPage: 1,
-		modalIsOpen: false,
+class App = () {
+	const [images, setImages] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [query, setQuery] = useState('');
+	const [page, setPage] = useState(1);
+	const [lastPage, setLastPage] = useState(1);
+	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const [modaPhotoURL, setModaPhotoURL] = useState(null);
+	const [modalAlt, setModalAlt] = useState(null);
 	};
 
-  updateQuery = ({ query }) => {
-    this.setState({  query: query });
-  };
+const updateQuery = ({ query }) => {
+    setState(query);
+};
 
-  modalInfo = {
-    modalPhotoURL: null,
-    modalAlt: null,
-  };
-
-	mapNewImages = (fetchedImages) => {
+const mapImages = fetchedImages => {
 		const mapedImages = fetchedImages.map((image) => ({
 			id: image.id,
 			small: image.webformatURL,
@@ -39,73 +34,69 @@ class App extends Component {
 		return mapedImages;
 	};
 
-	goToNextPage = () => {
-		let { actualPage } = this.state;
-		actualPage++;
-		this.setState({ actualPage: actualPage });
+const NextPage = () => {
+		setState(prevPage => prevPage + 1);
 	};
 
-	openModal = (e) => {
-		this.setState({
-			modalIsOpen: true,
-		});
+const openModal = e => {
+		setModalIsOpen(true);
+		setModalPhotoURL(e.target.dataset['source']);
+		setModalAlt(e.target.alt);
+};
 
-		this.modalInfo = {
-			modalPhotoURL: e.target.dataset["source"],
-			modalAlt: e.target.alt,
-		};
-	};
-
-	closeModal = (e) => {
+const closeModal = e => {
 		if (e.target.nodeName !== "IMG") {
-			this.setState({
-				modalIsOpen: false,
-			});
+			setModalIsOpen(false);
 		}
 	};
 
-	closeModalWithButton = (e) => {
+const closeModalEsc = e => {
 		if (e.key === "Escape") {
-			this.setState({
-				modalIsOpen: false,
-			});
+			setModalIsOpen(false);
 		}
 	};
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { query, actualPage, images } = this.state;
-  
-    if (this.state.page !== prevState.page || this.state.query !== prevState.query) {
-      this.setState({ isLoading: true });
-      try {
-        const fetchedData = await Api.fetchPhotos(query, 1);
-        const mapedImages = this.mapNewImages(fetchedData.images);
-        const lastPage = Math.ceil(fetchedData.total / 12);
-        this.setState({ images: mapedImages, actualPage: 1, lastPage });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ isLoading: false });
-      }
-    } else if (prevState.actualPage !== actualPage && actualPage !== 1) {
-      this.setState({ isLoading: true });
-      try {
-        const fetchedData = await Api.fetchPhotos(query, actualPage);
-        const mapedImages = await this.mapNewImages(fetchedData.images);
-        const concatImages = images.concat(mapedImages);
-        this.setState({ images: concatImages });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ isLoading: false });
-      }
-    }
-  }
+useEffect(() => {
+	if(!query) return;
 
-	render() {
-		const { images, actualPage, lastPage, isLoading, modalIsOpen, query } = this.state;
-		const { modalPhotoURL, modalAlt } = this.modalInfo;
+
+	const fetchData = async () => {
+		setLoading(true);
+		try {
+			const fetchedData = await Api.fetchPhotos(query, 1);
+			const mapedImages = this.mapNewImages(fetchedData.images);
+			const lastPage = Math.ceil(fetchedData.total / 12);
+			setImages(mappedImages);
+			setPage(1);
+			setLastPage(lastPage);
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+	}
+};
+
+	fetchData();
+}, [query]);
+
+	useEffect(() => {
+		if (page!== 1) {
+			const fetchData = async () => {
+				setLoading(true);
+				try {
+					const fetchedData = await Api.fetchPhotos(query, 1);
+					const mapedImages = this.mapNewImages(fetchedData.images);
+					setImages(prevImages => [,,,prevImages, ...mappedImages]);
+				} catch (error) {
+					console.log(error);
+				} finally {
+					setLoading(false);
+			}
+		};
+		fetchData();
+		}
+	}, [page, query]);
 
 		return (
 			<>
@@ -117,20 +108,17 @@ class App extends Component {
 						escHandler={this.closeModalWithButton}
 					></Modal>
 				)}
-				<Searchbar onSubmit={this.updateQuery} />
-				<ImageGallery
-					images={images}
-					page={actualPage}
-					clickHandler={this.openModal}
-				></ImageGallery>
-				{actualPage !== lastPage && images.length > 0 && !isLoading ? (
-					<Button onClick={this.goToNextPage} />
-				) : null}
-				{isLoading && <Loader />}
-				{images.length === 0 && query && !isLoading && <OnError>Nothing found! Try again</OnError>}
+				<Searchbar onSubmit={updateQuery} />
+				<ImageGallery images={images} page={actualPage} clickHandler={openModal} />
+				{page !== lastPage && images.length > 0 && loading === false ? (
+					<Button onClick={nextPage} />
+				) : ('')}
+				{loading && <Loader />}
+				{images.length === 0 && query !== '' && loading === false && (
+					<onError>Nothing found! Try again</onError>
+				)}
 			</>
 		);
-	}
-}
+
 
 export default App;

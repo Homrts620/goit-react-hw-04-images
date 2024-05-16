@@ -1,19 +1,17 @@
-import React, { Component } from "react";
-import css from "./SearchBar.module.css";
-import PropTypes from "prop-types";
+import css from './SearchBar.module.css';
+import PropTypes from 'prop-types';
 
-class SearchBar extends Component {
-    handleSubmit = (e) => {
+const SearchBar = props => {
+    const handleSubmit = e => {
         e.preventDefault();
         const form = e.currentTarget;
         const query = form.elements.query.value;
-        this.props.onSubmit({ query });
+        props.onSubmit({ query });
     };
 
-render () {
     return (
         <header className={css.searchbar}>
-				<form className={css.form} onSubmit={this.handleSubmit}>
+				<form className={css.form} onSubmit={handleSubmit}>
 					<button type="submit" className={css.button}>
 						<span className={css["button-label"]}>Search</span>
 					</button>
@@ -29,7 +27,6 @@ render () {
 				</form>
 			</header>
     );
-}
 }
 
 SearchBar.propTypes = {

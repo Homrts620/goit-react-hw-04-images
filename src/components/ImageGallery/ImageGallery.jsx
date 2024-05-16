@@ -1,48 +1,42 @@
-import React, { Component } from "react";
-import ImageGalleryItem from "./ImageGalleryItem/ImageGalleryItem";
-import PropTypes from "prop-types";
-import css from "./ImageGallery.module.css";
+import { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
+import css from './ImageGalleryItem.module.css';
 
-class ImageGallery extends Component {
-    componentDidUpgrade(prevProps) {
-        if(this.props.page !== 1 && this.props.images.length !== prevProps.images.length) {
-            window.scrollBy({ top: 500, behavior:"smooth" });
+const ImageGalleryItem = ({ images, clickHandler }) => {
+    useEffect(() => {
+        if (images.length > 12) {
+            window.scrollBy({ top:500, behavior: 'smooth'});
         }
-    }
+    }, [images]);
+    return (
+        <ul className={css.gallery}>
+        {images.map(image => (
+        <ImageGalleryItem
+            key={image.id}
+            id = {image.id}
+            src = {image.small} 
+            alt = {image.alt}
+            data-source = {image.large}
+            onClick = {clickHandler}/>
+    ))}
+</ul>
+);
+};
 
-    render() {
-        const { images, clickHandler } =this.props;
-        return (
-            <ul className={css.gallery}>
-            { images.map((image) => {
-                return (
-                    <ImageGalleryItem
-                        key={ image.id }
-                        id = { image.id }
-                        src = { image.small } 
-                        alt = { image.alt }
-                        data = { image.large }
-                        clickHandler = { clickHandler } 
-                    ></ImageGalleryItem>
-                );
-            })
-            }
-            </ul>
-        );
-    }
-}
 
-ImageGallery.propTypes = {
+
+ImageGalleryItem.propTypes = {
     page: PropTypes.number.isRequired,
     clickHandler: PropTypes.func.isRequired,
-	images: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.number.isRequired,
-			small: PropTypes.string.isRequired,
-			alt: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            small: PropTypes.string.isRequired,
+            alt: PropTypes.string.isRequired,
             large: PropTypes.string.isRequired,
-		}).isRequired
-	).isRequired,
+        }).isRequired
+    ).isRequired,
 };
 
 export default ImageGallery;

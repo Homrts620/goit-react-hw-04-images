@@ -1,7 +1,6 @@
-import React from "react";
-import css from "./Loader.module.css";
-import styled, { keyframes } from "styled-components";
-import { useMediaQuery } from "react-responsive";
+import css from './Loader.module.css';
+import styled, { keyframes } from 'styled-components';
+import { useMediaQuery } from 'react-responsive';
 
 const AnimCircleOuter = keyframes`
     0% {
