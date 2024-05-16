@@ -1,0 +1,26 @@
+.button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.load-more {
+    text-transform: uppercase;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    background-color: #00184b;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 
+    0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+.load-more:hover,
+.load-more:focus  {
+    background-color: #0022ff;
+}
